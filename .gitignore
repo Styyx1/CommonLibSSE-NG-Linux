@@ -1,0 +1,9 @@
+build/
+.xmake/
+vsxmake*/
+compile_commands.json
+.vs/
+CMakeUserPresets.json
+*.zip
+*.user
+*.code-workspace
