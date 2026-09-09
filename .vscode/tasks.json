@@ -5,22 +5,19 @@
             "label": "BUILD mod",
             "type": "shell",
             "command": "./scripts/build.sh",
+            "windows": {
+                "command": "./scripts/build.bat"
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher":[],
+            "problemMatcher": [],
             "presentation": {
                 "echo": true,
                 "reveal": "always",
                 "panel": "dedicated",
                 "clear": true
-            },
-            "windows":{
-                "command": "./scrpts/build.bat"
-            },
-            "linux":{
-                "command": "./scripts/build.sh",
             }
         }
     ]

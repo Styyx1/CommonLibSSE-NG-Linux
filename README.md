@@ -6,7 +6,7 @@ Based on [libxse/commonlibsse-ng-template](https://github.com/libxse/commonlibss
 
 ## Requirements
 
-**Windows:** Visual Studio 2022 (C++ desktop workload) and [xmake](https://xmake.io) 3.0+. Untested.
+**Windows:** [Visual Studio 2022 (C++ desktop workload)](https://visualstudio.microsoft.com/) and [xmake](https://xmake.io) 3.0+.
 
 **Linux (Arch / CachyOS):**
 
@@ -31,6 +31,22 @@ cd CommonLibSSE-NG-Linux
 git submodule update --init --recursive
 ```
 
+## Customize
+
+Edit the identity block at the top of `xmake.lua` (`PLUGIN`, `AUTHOR`, `CONTACT`, `DESCRIPTION`, `VERSION`, `LICENSE`). That is the only required change.
+
+Optional, picked up automatically if present:
+
+- `include/` — extra headers
+- `package/` — Data-layout files installed next to the DLL (`SKSE/Plugins/*.ini`, `Scripts/`, `Interface/`, …)
+- `src/pch.h` or `src/PCH.h` — precompiled header
+
+CommonLib flags must be set above `includes()` in `xmake.lua`, or at configure time:
+
+```bash
+xmake f --skse_xbyak=y --rex_ini=y --skyrim_vr=n
+```
+
 ## Build
 
 Linux:
@@ -45,12 +61,12 @@ Windows:
 scripts\build.bat
 ```
 
+There is also a build task for VSC and derivatives running those scripts.
+
+Default mode is `releasedbg`. `debug` and `release` are also available (`xmake f -m release`).
+
 DLL: `build/windows/x64/releasedbg/commonlibsse-ng-template.dll`
 
 A copy goes to `build/install/SKSE/Plugins/`. To install into a mod manager or Skyrim instead, set `XSE_TES5_MODS_PATH` or `XSE_TES5_GAME_PATH`.
 
-Rename the plugin in `xmake.lua` (`set_project`, `target`, and the `commonlibsse-ng.plugin` `name` field).
-
 Visual Studio project: `xmake project -k vsxmake`
-
-If Linux configure hangs, leftover `mspdbsrv.exe` is usually the problem. `build.sh` kills it; otherwise `killall -9 mspdbsrv.exe`.

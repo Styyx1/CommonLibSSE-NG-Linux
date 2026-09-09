@@ -1,52 +1,83 @@
 set_xmakever("3.0.0")
 
+-- Identity: the only block most clones need to edit.
+local PLUGIN      = "commonlibsse-ng-template"
+local AUTHOR      = "your name"
+local CONTACT     = ""
+local DESCRIPTION = "SKSE64 plugin template using CommonLibSSE-NG"
+local VERSION     = "0.0.0"
+local LICENSE     = "GPL-3.0"
+
+-- CommonLib feature flags must be set before includes() so add_requires sees them.
+-- Configure later with: xmake f --skyrim_vr=n --skse_xbyak=y --rex_ini=y
+-- set_config("skse_xbyak", true)
+-- set_config("rex_ini", true)
+-- set_config("rex_json", true)
+-- set_config("rex_toml", true)
+-- set_config("skyrim_vr", false)
+
 -- Linux: MSVC via Wine. Windows: native MSVC (xmake default).
 if is_host("linux") then
     includes("toolchains/msvc-wine.lua")
     add_repositories("skse-linux xmake-repo")
-    set_policy("build.ccache", false)
-    set_plat("windows")
-    set_arch("x64")
     set_toolchains("msvc-wine")
+    add_cxxflags("cl::/std:c++latest", {force = true})
 end
+
+-- SKSE plugins are always a Windows x64 DLL.
+set_plat("windows")
+set_arch("x64")
 
 includes("lib/commonlibsse-ng")
 
-set_project("commonlibsse-ng-template")
-set_version("0.0.0")
-set_license("GPL-3.0")
+set_project(PLUGIN)
+set_version(VERSION)
+set_license(LICENSE)
 set_languages("c++23")
 set_warnings("allextra")
+set_encodings("utf-8")
 
-add_rules("mode.debug", "mode.releasedbg")
+add_rules("mode.debug", "mode.release", "mode.releasedbg")
 add_rules("plugin.vsxmake.autoupdate")
 set_defaultmode("releasedbg")
+set_policy("build.ccache", true)
+set_policy("check.auto_ignore_flags", false)
 
 if is_host("linux") then
-    add_cxxflags("cl::/std:c++latest", {force = true})
     target("commonlibsse-ng")
         add_cxxflags("cl::/std:c++latest", {force = true})
     target_end()
 end
 
-set_policy("build.ccache", true)
-set_policy("build.optimization.header_dependencies", false)
-
-target("commonlibsse-ng-template")
+target(PLUGIN)
     add_rules("commonlibsse-ng.plugin", {
-        name = "commonlibsse-ng-template",
-        author = "your name",
-        description = "SKSE64 plugin template using CommonLibSSE-NG"
+        name = PLUGIN,
+        author = AUTHOR,
+        contact = CONTACT,
+        description = DESCRIPTION,
     })
+
     add_files("src/**.cpp")
     add_headerfiles("src/**.h")
     add_includedirs("src")
-    set_pcxxheader("src/pch.h")
-    -- The plugin rule runs `xmake install` after every rebuild. Without
-    -- XSE_TES5_* that defaults to /usr/local or Program Files.
-    on_config(function(target)
-        if not os.getenv("XSE_TES5_MODS_PATH") and not os.getenv("XSE_TES5_GAME_PATH") then
-            target:set("installdir", path.join(os.projectdir(), "build", "install"))
-        end
-    end)
+    if os.isdir("include") then
+        add_headerfiles("include/**.h")
+        add_includedirs("include")
+    end
+    if os.isfile("src/pch.h") then
+        set_pcxxheader("src/pch.h")
+    elseif os.isfile("src/PCH.h") then
+        set_pcxxheader("src/PCH.h")
+    end
+
+    add_defines("NOMINMAX", "WIN32_LEAN_AND_MEAN")
+
+    -- Data-layout extras (SKSE/Plugins/*.ini, Scripts/, Interface/, …).
+    if os.isdir("package") then
+        add_installfiles("package/(**)")
+    end
+
+    -- Plugin rule installs after every rebuild. CLIB replaces this when
+    -- XSE_TES5_MODS_PATH or XSE_TES5_GAME_PATH is set.
+    set_installdir("$(projectdir)/build/install")
 target_end()
