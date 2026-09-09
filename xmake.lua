@@ -29,6 +29,9 @@ if is_host("linux") then
     target_end()
 end
 
+set_policy("build.ccache", true)
+set_policy("build.optimization.header_dependencies", false)
+
 target("commonlibsse-ng-template")
     add_rules("commonlibsse-ng.plugin", {
         name = "commonlibsse-ng-template",

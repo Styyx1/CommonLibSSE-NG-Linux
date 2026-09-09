@@ -15,6 +15,12 @@
                 "reveal": "always",
                 "panel": "dedicated",
                 "clear": true
+            },
+            "windows":{
+                "command": "./scrpts/build.bat"
+            },
+            "linux":{
+                "command": "./scripts/build.sh",
             }
         }
     ]
