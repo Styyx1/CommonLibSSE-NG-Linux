@@ -1,6 +1,6 @@
 -- MSVC via Wine (https://github.com/mstorsjo/msvc-wine).
 -- SDK: --sdk= or $MSVC_BINS or ~/msvc-bins
--- Pair with the skse-linux package overlay (xmake-repo/).
+-- Pair with the skse-linux package overlay (tools/xmake-repo/).
 toolchain("msvc-wine")
     set_kind("standalone")
     set_homepage("https://github.com/mstorsjo/msvc-wine")

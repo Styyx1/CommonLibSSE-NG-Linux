@@ -4,9 +4,12 @@
         {
             "label": "BUILD mod",
             "type": "shell",
-            "command": "./scripts/build.sh",
+            "command": "./tools/build.sh",
             "windows": {
-                "command": "./scripts/build.bat"
+                "command": "./tools/build.bat"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
             },
             "group": {
                 "kind": "build",

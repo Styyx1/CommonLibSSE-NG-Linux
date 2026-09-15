@@ -36,4 +36,4 @@ if [[ ! -x "$DEST/bin/x64/cl" ]]; then
 fi
 
 echo "OK. SDK is at $DEST"
-echo "Build with: ./scripts/build.sh"
+echo "Build with: ./tools/build.sh"

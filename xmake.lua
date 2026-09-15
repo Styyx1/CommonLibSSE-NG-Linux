@@ -1,6 +1,5 @@
 set_xmakever("3.0.0")
 
--- Identity: the only block most clones need to edit.
 local PLUGIN      = "commonlibsse-ng-template"
 local AUTHOR      = "your name"
 local CONTACT     = ""
@@ -8,27 +7,26 @@ local DESCRIPTION = "SKSE64 plugin template using CommonLibSSE-NG"
 local VERSION     = "0.0.0"
 local LICENSE     = "GPL-3.0"
 
--- CommonLib feature flags must be set before includes() so add_requires sees them.
--- Configure later with: xmake f --skyrim_vr=n --skse_xbyak=y --rex_ini=y
--- set_config("skse_xbyak", true)
+-- CommonLib flags must be set before includes() so add_requires sees them.
+set_config("skse_xbyak", true)
+set_config("skyrim_se", true)
+set_config("skyrim_ae", true)
+-- set_config("skyrim_vr", true)
 -- set_config("rex_ini", true)
--- set_config("rex_json", true)
 -- set_config("rex_toml", true)
--- set_config("skyrim_vr", false)
 
--- Linux: MSVC via Wine. Windows: native MSVC (xmake default).
+
 if is_host("linux") then
-    includes("toolchains/msvc-wine.lua")
-    add_repositories("skse-linux xmake-repo")
+    includes("tools/toolchains/msvc-wine.lua")
+    add_repositories("skse-linux tools/xmake-repo")
     set_toolchains("msvc-wine")
     add_cxxflags("cl::/std:c++latest", {force = true})
 end
 
--- SKSE plugins are always a Windows x64 DLL.
 set_plat("windows")
 set_arch("x64")
 
-includes("lib/commonlibsse-ng")
+includes("lib/CommonLibSSE-NG")
 
 set_project(PLUGIN)
 set_version(VERSION)
@@ -60,6 +58,7 @@ target(PLUGIN)
     add_files("src/**.cpp")
     add_headerfiles("src/**.h")
     add_includedirs("src")
+    add_packages("spdlog")
     if os.isdir("include") then
         add_headerfiles("include/**.h")
         add_includedirs("include")
@@ -72,7 +71,6 @@ target(PLUGIN)
 
     add_defines("NOMINMAX", "WIN32_LEAN_AND_MEAN")
 
-    -- Data-layout extras (SKSE/Plugins/*.ini, Scripts/, Interface/, …).
     if os.isdir("package") then
         add_installfiles("package/(**)")
     end
